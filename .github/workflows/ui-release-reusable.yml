@@ -27,6 +27,7 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: npm install -g npm@11.11.0
       - run: npm ci
+      # Changesets detects pnpm from pnpm-workspace.yaml and invokes pnpm publish.
       - name: Enable pnpm (changesets spawns pnpm publish)
         run: |
           corepack enable
