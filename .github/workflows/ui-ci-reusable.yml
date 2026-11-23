@@ -1,0 +1,190 @@
+name: CI
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pm: [npm, pnpm]
+    name: lint-and-format (${{ matrix.pm }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Upgrade npm (fix EMISSINGSIGNATUREKEY for keyless attestations)
+        run: npm install -g npm@11.11.0
+      - name: Enable pnpm
+        if: matrix.pm == 'pnpm'
+        run: |
+          corepack enable
+          corepack prepare pnpm@12 --activate
+          pnpm --version
+      - name: Install (npm)
+        if: matrix.pm == 'npm'
+        run: npm ci
+      - name: Install (pnpm)
+        if: matrix.pm == 'pnpm'
+        run: pnpm install
+      - name: Lint and format
+        run: ${{ matrix.pm }} run check
+
+  typecheck:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pm: [npm, pnpm]
+    name: typecheck (${{ matrix.pm }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Upgrade npm (fix EMISSINGSIGNATUREKEY for keyless attestations)
+        run: npm install -g npm@11.11.0
+      - name: Enable pnpm
+        if: matrix.pm == 'pnpm'
+        run: |
+          corepack enable
+          corepack prepare pnpm@12 --activate
+          pnpm --version
+      - name: Install (npm)
+        if: matrix.pm == 'npm'
+        run: npm ci
+      - name: Install (pnpm)
+        if: matrix.pm == 'pnpm'
+        run: pnpm install
+      - name: Build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+        run: ${{ matrix.pm }} run build
+      - name: Typecheck
+        run: ${{ matrix.pm }} run typecheck
+
+  registry-drift:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pm: [npm, pnpm]
+    name: registry-drift (${{ matrix.pm }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Upgrade npm (fix EMISSINGSIGNATUREKEY for keyless attestations)
+        run: npm install -g npm@11.11.0
+      - name: Enable pnpm
+        if: matrix.pm == 'pnpm'
+        run: |
+          corepack enable
+          corepack prepare pnpm@12 --activate
+          pnpm --version
+      - name: Install (npm)
+        if: matrix.pm == 'npm'
+        run: npm ci
+      - name: Install (pnpm)
+        if: matrix.pm == 'pnpm'
+        run: pnpm install
+      - name: Build registry
+        run: ${{ matrix.pm }} run registry:build
+      - name: Check for drift
+        run: |
+          if [ -n "$(git status --porcelain apps/web/public/r apps/web/public/skills apps/native/public/r)" ]; then
+            echo "::error::Registry artifacts are stale."
+            echo "::error::Run '${{ matrix.pm }} run registry:build' locally and commit the result."
+            echo ""
+            echo "Changed files:"
+            git status --porcelain apps/web/public/r apps/web/public/skills apps/native/public/r
+            echo ""
+            echo "Diff:"
+            git diff apps/web/public/r apps/web/public/skills apps/native/public/r
+            exit 1
+          fi
+          echo "Registry artifacts are in sync with source."
+      - name: Registry audit
+        run: ${{ matrix.pm }} run registry:audit
+
+  theme-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Upgrade npm (fix EMISSINGSIGNATUREKEY for keyless attestations)
+        run: npm install -g npm@11.11.0
+      - name: Install (npm)
+        run: npm ci
+      - name: Check apps/web/styles/theme.css in sync with CLI template
+        run: |
+          if ! diff -q apps/web/styles/theme.css packages/cli/templates/theme.css; then
+            echo "::error::apps/web/styles/theme.css and packages/cli/templates/theme.css have drifted."
+            echo "::error::Run: cp apps/web/styles/theme.css packages/cli/templates/theme.css"
+            echo ""
+            echo "Diff:"
+            diff -u apps/web/styles/theme.css packages/cli/templates/theme.css || true
+            exit 1
+          fi
+          echo "theme.css is in sync with CLI template."
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pm: [npm, pnpm]
+    name: test (${{ matrix.pm }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Upgrade npm (fix EMISSINGSIGNATUREKEY for keyless attestations)
+        run: npm install -g npm@11.11.0
+      - name: Enable pnpm
+        if: matrix.pm == 'pnpm'
+        run: |
+          corepack enable
+          corepack prepare pnpm@12 --activate
+          pnpm --version
+      - name: Install (npm)
+        if: matrix.pm == 'npm'
+        run: npm ci
+      - name: Install (pnpm)
+        if: matrix.pm == 'pnpm'
+        run: pnpm install
+      - name: Test
+        run: ${{ matrix.pm }} test
+      - name: Audit package signatures
+        if: matrix.pm == 'npm'
+        run: npm audit signatures

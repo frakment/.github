@@ -1,0 +1,36 @@
+name: zizmor
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          path: repo
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: frakment/.github
+          persist-credentials: false
+          path: shared-workflows
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: "3.12"
+      - name: Scan caller and shared workflows
+        run: |
+          pip install zizmor==1.32.0
+          zizmor --format=sarif repo/.github/workflows shared-workflows/.github/workflows > zizmor.sarif
+      - uses: github/codeql-action/upload-sarif@1bd86f2fdb4b86187fa4059f16f31a3202acc9ea
+        if: always()
+        with:
+          sarif_file: zizmor.sarif
+          category: zizmor
