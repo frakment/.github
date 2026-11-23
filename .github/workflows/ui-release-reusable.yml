@@ -3,7 +3,7 @@ name: Release
 on:
   workflow_call:
     secrets:
-      github_token:
+      token:
         required: true
 
 permissions:
@@ -42,12 +42,12 @@ jobs:
           commit: "chore: version packages"
           title: "chore: version packages"
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.token }}
           NPM_CONFIG_PROVENANCE: true
       - name: Ensure version tags exist for published packages
         if: always()
         env:
-          GH_TOKEN: ${{ secrets.github_token }}
+          GH_TOKEN: ${{ secrets.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

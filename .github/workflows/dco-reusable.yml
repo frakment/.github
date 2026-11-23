@@ -3,7 +3,7 @@ name: DCO
 on:
   workflow_call:
     secrets:
-      github_token:
+      token:
         required: true
 
 permissions:
@@ -26,7 +26,7 @@ jobs:
         if: github.event.pull_request.user.login != 'dependabot[bot]'
         uses: tim-actions/get-pr-commits@198af03565609bb4ed924d1260247b4881f09e7d
         with:
-          token: ${{ secrets.github_token }}
+          token: ${{ secrets.token }}
       - name: Check Signed-off-by on all commits
         if: github.event.pull_request.user.login != 'dependabot[bot]'
         uses: tim-actions/dco@f2279e6e62d5a7d9115b0cb8e837b777b1b02e21
