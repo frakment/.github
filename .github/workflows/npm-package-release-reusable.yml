@@ -5,6 +5,8 @@ on:
     secrets:
       token:
         required: true
+      npm_token:
+        required: false
 
 permissions:
   contents: read
@@ -28,6 +30,13 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: npm install -g npm@11.11.0
       - run: npm ci
+      - name: Configure npm publish token
+        env:
+          NPM_TOKEN: ${{ secrets.npm_token }}
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            printf 'NODE_AUTH_TOKEN=%s\n' "$NPM_TOKEN" >> "$GITHUB_ENV"
+          fi
       - name: Create Release PR or Publish
         uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf
         with:
