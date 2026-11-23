@@ -17,6 +17,8 @@ jobs:
 
 The `ui-ci-reusable.yml` and `ui-release-reusable.yml` workflows are specific to `frakment/ui`.
 
+The `npm-package-ci-reusable.yml` and `npm-package-release-reusable.yml` workflows are for standalone npm package repositories with a root `package.json` and `package-lock.json`.
+
 The security workflows are reusable by other repositories when their source layout and permissions match the workflow requirements.
 
 Branch rulesets remain repository-specific, and required CI checks should only be configured after the repository has selected and run its workflows.

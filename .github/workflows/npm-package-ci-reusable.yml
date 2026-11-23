@@ -1,0 +1,29 @@
+name: npm package CI
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Upgrade npm for keyless attestations
+        run: npm install -g npm@11.11.0
+      - run: npm ci
+      - run: npm run check --if-present
+      - run: npm run typecheck --if-present
+      - run: npm test --if-present
+      - run: npm pack --dry-run
+      - run: npm audit signatures
