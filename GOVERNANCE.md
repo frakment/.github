@@ -2,8 +2,6 @@
 
 Frakment welcomes contributions from anyone, and contributors do not need to join the GitHub organization to participate.
 
-All contributors are expected to follow the Code of Conduct.
-
 ## Contributor levels
 
 Contributor levels describe the kinds of contributions and responsibilities someone has taken on.
@@ -34,21 +32,19 @@ Maintainers help steward Frakment by reviewing contributions, supporting contrib
 
 Maintainers also submit their own changes through pull requests.
 
-### Owner and repository administration
-
-Repository administration is an access responsibility, not a contributor level.
-
 ## Recognition and promotion
 
-Contributors may ask to be considered for another level, and the owner or a maintainer may recommend someone.
+Contributors may ask to be considered for another level.
 
-The owner makes the final decision using the contributor's work, collaboration, judgment, and willingness to take on the responsibilities of the next level.
+Advancement is based on the contributor's work, collaboration, judgment, and willingness to take on the responsibilities of the next level.
 
 There is no required amount of time, fixed number of pull requests, or automatic promotion.
 
 Examples of expected contributions are considered in context and are not absolute eligibility requirements.
 
 Contributor levels do not automatically grant organization membership, repository access, review permissions, or merge privileges.
+
+All contributors are expected to follow the Code of Conduct.
 
 ## Teams and repository access
 
@@ -67,6 +63,4 @@ All changes to a protected default branch are proposed through a pull request, i
 The owner reviews each pull request and is the only person who merges changes to protected default branches.
 
 Maintainers and Developers may provide additional review and technical feedback.
-
-The owner must configure equivalent branch rules for each new repository because branch rules are managed per repository.
 
