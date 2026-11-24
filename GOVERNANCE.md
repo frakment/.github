@@ -38,8 +38,6 @@ Maintainers also submit their own changes through pull requests.
 
 Repository administration is an access responsibility, not a contributor level.
 
-Only the organization owner has administrator and bypass privileges.
-
 ## Recognition and promotion
 
 Contributors may ask to be considered for another level, and the owner or a maintainer may recommend someone.
@@ -60,7 +58,7 @@ Organization Teams are used to group invited contributors, while repository perm
 
 Public Contributors do not need to join a Team.
 
-Developers and Maintainers may help review pull requests when granted the required repository permission, but only the owner can update protected default branches.
+Developers and Maintainers may help review pull requests when granted the required repository permission, but only the owner merges changes to protected default branches.
 
 ## Pull requests, reviews, and merges
 
@@ -69,8 +67,6 @@ All changes to a protected default branch are proposed through a pull request, i
 The owner reviews each pull request and is the only person who merges changes to protected default branches.
 
 Maintainers and Developers may provide additional review and technical feedback.
-
-The owner-only bypass is reserved for exceptional situations, and pull requests remain the normal path for changes.
 
 The owner must configure equivalent branch rules for each new repository because branch rules are managed per repository.
 
