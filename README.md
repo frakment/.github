@@ -2,6 +2,8 @@
 
 This repository hosts reusable GitHub Actions workflows for Frakment repositories.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the shared contribution process and [GOVERNANCE.md](GOVERNANCE.md) for contributor levels and repository access.
+
 Reusable workflows do not run in another repository on their own, so each repository must add a small caller workflow that selects the desired reusable workflow and its trigger.
 
 Call reusable workflows using a full commit SHA, for example:
